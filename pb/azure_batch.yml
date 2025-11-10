@@ -1,0 +1,29 @@
+---
+- name: Deploy Azure Batch account and resources using ARM template
+  hosts: localhost
+  connection: local
+  collections:
+    - azure.azcollection
+
+  vars:
+    # Customize these for your environment
+    resource_group: "anoop-rg"
+    location: "eastus"
+    deployment_name: "anoop-batch-deployment"
+    template_file: "./azure_batch_account.json"
+    parameters_file: "./azure_batch_account.parameters.json"  # optional
+
+  tasks:
+    - name: Ensure resource group exists
+      azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+
+    - name: Deploy ARM template for Azure Batch
+      azure_rm_deployment:
+        resource_group: "{{ resource_group }}"
+        name: "{{ deployment_name }}"
+        location: "{{ location }}"
+        template: "{{ lookup('file', template_file) }}"
+        # Optional: include this only if you have a parameters JSON file
+        # parameters: "{{ lookup('file', parameters_file) | from_json }}"
