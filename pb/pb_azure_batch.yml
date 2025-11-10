@@ -1,0 +1,62 @@
+---
+- name: Create Azure Batch environment with pool, job, and task
+  hosts: localhost
+  connection: local
+  collections:
+    - azure.azcollection
+
+  vars:
+    resource_group: "anoop-rg"
+    location: "eastus"
+    batch_account_name: "anoopbatch"
+    storage_account_name: "anoopbatchstorage"
+    pool_name: "anooppool"
+    job_name: "anoopjob"
+    task_name: "anooptask1"
+
+  tasks:
+    - name: Ensure resource group exists
+      azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+
+    - name: Ensure Batch account exists
+      azure_rm_batchaccount:
+        resource_group: "{{ resource_group }}"
+        name: "{{ batch_account_name }}"
+        location: "{{ location }}"
+        auto_storage_account:
+          storage_account_id: "/subscriptions/{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Storage/storageAccounts/{{ storage_account_name }}"
+        state: present
+
+    - name: Create Batch pool
+      azure_rm_batchpool:
+        resource_group: "{{ resource_group }}"
+        account_name: "{{ batch_account_name }}"
+        name: "{{ pool_name }}"
+        vm_size: "Standard_D2s_v3"
+        target_dedicated_nodes: 2
+        image:
+          publisher: "MicrosoftWindowsServer"
+          offer: "WindowsServer"
+          sku: "2019-datacenter-core-smalldisk"
+        os_type: "Windows"
+        state: present
+
+    - name: Create Batch job
+      azure_rm_batchjob:
+        resource_group: "{{ resource_group }}"
+        account_name: "{{ batch_account_name }}"
+        name: "{{ job_name }}"
+        pool:
+          name: "{{ pool_name }}"
+        state: present
+
+    - name: Create Batch task
+      azure_rm_batchtask:
+        resource_group: "{{ resource_group }}"
+        account_name: "{{ batch_account_name }}"
+        job_name: "{{ job_name }}"
+        name: "{{ task_name }}"
+        command_line: 'cmd /C "ipconfig"'
+        state: present
