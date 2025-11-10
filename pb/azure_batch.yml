@@ -7,11 +7,10 @@
 
   vars:
     # Customize these for your environment
-    resource_group: "anoop-rg"
+    resource_group: "An-Resources"
     location: "eastus"
     deployment_name: "anoop-batch-deployment"
     template_file: "./azure_batch_account.json"
-    parameters_file: "./azure_batch_account.parameters.json"  # optional
 
   tasks:
     - name: Ensure resource group exists
