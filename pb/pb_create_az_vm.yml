@@ -4,7 +4,7 @@
   connection: local
   vars:
     resource_group: "An-Resources"
-    location: "eastus"
+    location: "Central US"
     vm_name: "Labserver2"
     admin_username: "azureuser"
     admin_password: "Password@123"    # Use vault in real environments
