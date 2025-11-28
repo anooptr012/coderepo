@@ -3,16 +3,16 @@
   hosts: localhost
   connection: local
   vars:
-    resource_group: "myResourceGroup"
+    resource_group: "An-Resources"
     location: "eastus"
-    vm_name: "myLinuxVM"
+    vm_name: "Labserver2"
     admin_username: "azureuser"
     admin_password: "Password@123"    # Use vault in real environments
-    vm_size: "Standard_B1s"           # Free-tier eligible
+    vm_size: "Standard_DC1s_v3"           # Free-tier eligible
     image:
-      offer: "UbuntuServer"
-      publisher: "Canonical"
-      sku: "18.04-LTS"
+      offer: "WindowsServer"
+      publisher: "MicrosoftWindowsServer"
+      sku: "2025-datacenter-azure-edition"
       version: "latest"
 
   tasks:
